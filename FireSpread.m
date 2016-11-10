@@ -1,32 +1,31 @@
 
 
-matrixDim=300; %Sets dimensions of square forest matrix
+matrixDim=200; %Sets dimensions of square forest matrix
 
 position = zeros(matrixDim,matrixDim,'uint8');
 updatedPosition = zeros(matrixDim,matrixDim,'uint8');
-A = zeros(matrixDim,matrixDim,'uint8');
-timeonfire = zeros(matrixDim,matrixDim,'uint8');
+timeonfire = zeros(matrixDim,matrixDim,'uint32');
 intensity = zeros(matrixDim,matrixDim,'uint8');
+
+burntime=40;
 
 k = 1;  %Initializing step incrementer
 
-steps = 100;    %Number of Steps going to be Simulated
+steps = 20;    %Number of Steps going to be Simulated
 
-%Setting Initial Fire Locations
-position(100,100)=1;
-position(150,200)=1;
-position(250,50)=1;
+position(150,50)=1; %starting initial fire
 
-updatedPosition=position; %Initializing Updated Position Matrix
 
-probN=0.2;
-probS=0.9;
-probE=0.3;
-probW=0.9;
-probNW=0.5;
-probSW=0.5;
-probNE=0.1;
-probSE=0.86;
+updatedPosition=position;
+
+probN=0.7;
+probS=0.0;
+probE=0.1;
+probW=0.2;
+probNW=0.3;
+probSW=0.4;
+probNE=0.3;
+probSE=0.2;
 
 while k<steps  
     for i=1:matrixDim
@@ -35,7 +34,7 @@ while k<steps
                 a=i;
                 b=j;
                 timeonfire(i,j)=timeonfire(i,j)+1;
-                if(timeonfire(i,j)<50)
+                if(timeonfire(i,j)<burntime)
                 intensity(i,j)=intensity(i,j)+1;
                 elseif (intensity(i,j)>0)
                 intensity(i,j)= intensity(i,j)-1;
@@ -61,7 +60,7 @@ while k<steps
                         updatedPosition(a,b-1)=1;
                     end
                     if probCatch(probSW)
-                        updatedPosition(a-1,b-1)=1;
+                        updatedPosition(a+1,b-1)=1;
                     end
        
                 elseif a==matrixDim && b==1
@@ -183,20 +182,23 @@ while k<steps
             end
         end
     end
-
+    
     position=updatedPosition;
     mesh(intensity);
+    axis([0 300 0 300 0 300 ])
     pcolor(intensity);
     M(k) = getframe;
     k=k+1;
 end
-
 save M
 
 
 
+[sum1x,sum2x,balancex,diffx] = partitionx(intensity, matrixDim);
+[sum1y,sum2y,balancey,diffy]=partitiony(intensity, matrixDim);
 
-
+balancex
+balancey
 
 
 
