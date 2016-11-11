@@ -19,18 +19,12 @@ position(95,95)=1; %starting initial fire
 
 updatedPosition=position;
 
-% probN=0.85;
-% probS=0.05;
-% probE=0.34;
-% probW=0.23;
-% probNW=0.22;
-% probSW=0.09;
-% probNE=0.34;
-% probSE=0.9;
 windSpeed=50;
 windDirection=pi/4;
 spreadProb = 0.5;
-wind= windBias(windSpeed, windDirection, spreadProb) ;
+
+wind = windBias(windSpeed, windDirection, spreadProb);
+
 probN = wind(1);
 probS = wind(2);
 probW = wind(3);

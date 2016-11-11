@@ -1,4 +1,4 @@
-function [ sum1, sum2, balance, diff ] = partitiony( intensity, matrixDim )
+function [ sum1, sum2, balance, diff ] = partitionx( intensity, matrixDim )
 k=1;
 a=[0 0 0];
 sum1=100;
@@ -48,8 +48,6 @@ end
 
 balance=index;
 
-
-return
  
 end
 
