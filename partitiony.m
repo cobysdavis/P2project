@@ -3,7 +3,7 @@ k=1;
 a=[0 0 0];
 sum1=100;
 sum2=0;
-tolerance=20;
+tolerance=5;
 diff=abs(sum1-sum2);
 index=matrixDim/2;
 while diff>tolerance
@@ -43,13 +43,9 @@ end
  k=mod(k,3);
  k=k+1;
  diff=abs(sum1-sum2);
+ balance=index;
 end
 
-
-balance=index;
-
-
-return
  
 end
 

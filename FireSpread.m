@@ -2,20 +2,21 @@
 
 matrixDim=100; %Sets dimensions of square forest matrix
 
-position = zeros(matrixDim,matrixDim,'uint8');
-updatedPosition = zeros(matrixDim,matrixDim,'uint8');
-timeonfire = zeros(matrixDim,matrixDim,'uint32');
-intensity = zeros(matrixDim,matrixDim,'uint8');
+position = zeros(matrixDim,matrixDim);
+updatedPosition = zeros(matrixDim,matrixDim);
+timeonfire = zeros(matrixDim,matrixDim);
+intensity = zeros(matrixDim,matrixDim);
 
 burntime=20;
 
 k = 1;  %Initializing step incrementer
 
-steps = 10;    %Number of Steps going to be Simulated
+steps = 50;    %Number of Steps going to be Simulated
 
-position(5,5)=1; %starting initial fire
-position(95,95)=1; %starting initial fire
+position(50,25)=1; %starting initial fire
 
+position(90,90)=1; %starting initial fire
+%
 
 updatedPosition=position;
 
@@ -28,8 +29,8 @@ updatedPosition=position;
 % probNE=0.34;
 % probSE=0.9;
 windSpeed=50;
-windDirection=pi/4;
-spreadProb = 0.5;
+windDirection=pi/8;
+spreadProb = 0.1;
 wind= windBias(windSpeed, windDirection, spreadProb) ;
 probN = wind(1);
 probS = wind(2);
@@ -204,16 +205,15 @@ while k<steps
     ylabel('x');
     M(k) = getframe;
     k=k+1;
+
 end
 save M
+intensity;
+    [sum1y,sum2y,balancey,diffy]=partitiony(intensity, matrixDim)
+    [sum1x,sum2x,balancex,diffx] = partitionx(intensity, matrixDim)
 
+    centreofMass=[balancex,balancey]
 
-
-[sum1x,sum2x,balancex,diffx] = partitionx(intensity, matrixDim);
-[sum1y,sum2y,balancey,diffy]=partitiony(intensity, matrixDim);
-
-
-centreofMass=[balancex,balancey]
 
 
 
