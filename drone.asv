@@ -8,8 +8,11 @@ y = 1;
 
 movementMatrix = zeros(100, 100);
 
+
 while k<steps
     
+    
+   
     movementMatrix(droneX,droneY) = 0;
     droneX = droneX + droneSpeedX;
     droneY = droneY + droneSpeedY;
@@ -21,7 +24,6 @@ while k<steps
     if (droneY > 100 || droneY < 2)
         droneSpeedY = -droneSpeedY;
     end
-    
     mesh(movementMatrix);
     pcolor(movementMatrix);
     M(k) = getframe;
