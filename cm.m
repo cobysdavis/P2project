@@ -1,4 +1,4 @@
-function [xcm1,ycm1,xcm2,ycm2] = cm(intensity,closest,matrixDim)
+function [CM1,CM2] = cm(intensity,closest,matrixDim)
 
 sumx1=0;
 sumy1=0;
@@ -25,5 +25,8 @@ ycm1=floor(sumy1/sumt1);
 
 xcm2=floor(sumx2/sumt2);
 ycm2=floor(sumy2/sumt2);
+
+CM1=[xcm1 ycm1];
+CM2=[xcm2 ycm2];
 end
 

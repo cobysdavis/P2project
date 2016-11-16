@@ -1,22 +1,11 @@
 
 
-matrixDim=20; %Sets dimensions of square forest matrix
+matrixDim=50; %Sets dimensions of square forest matrix
 
 position = zeros(matrixDim,matrixDim);
 updatedPosition = zeros(matrixDim,matrixDim);
 timeonfire = zeros(matrixDim,matrixDim);
 intensity = zeros(matrixDim,matrixDim);
-
-dronepos=zeros(matrixDim,matrixDim);
-
-drone1x=1;
-drone1y=1;
-
-drone2x=1;
-drone2y=15;
-
-dronepos(drone1x,drone1y)=1
-dronepos(drone1x,drone1y)=2
 
 
 
@@ -25,9 +14,10 @@ burntime=20;
 
 k = 1;  %Initializing step incrementer
 
-steps = 30;    %Number of Steps going to be Simulated
+steps = 50;    %Number of Steps going to be Simulated
 
-position(10,10)=1; %starting initial fire
+position(5,5)=1; %starting initial fire
+position(35,35)=1; %starting initial fire
 
 %
 
@@ -212,10 +202,11 @@ while k<steps
     end
     
     position=updatedPosition;
-    mesh(intensity);
+    figure1=mesh(intensity);
     pcolor(intensity);
     xlabel('y');
     ylabel('x');
+    hold off
     M(k) = getframe;
     k=k+1;
 
@@ -223,8 +214,24 @@ end
 save M
 intensity;
 
-closest=findclosest(intensity,matrixDim,drone1x,drone1y,drone2x,drone2y)
-mesh(closest);
+
+[dronepos1,dronepos2]=startdrones(intensity,matrixDim);
+
+closest=findclosest(intensity,matrixDim,dronepos1(1),dronepos1(2),dronepos2(1),dronepos2(2));
+figure2=mesh(closest);
 pcolor(closest);
+hold on
 
+[CMfire1,CMfire2]=cm(intensity,closest,matrixDim);
 
+[direction1] = direction(dronepos1,CMfire1);
+[direction2] = direction(dronepos2,CMfire2);
+
+percentagemove=0.25;
+
+[distance1]=movement(direction1,percentagemove);
+[distance2]=movement(direction2,percentagemove);
+
+closest(25,25)=10;
+figure3=mesh(closest);
+pcolor(intensity);
