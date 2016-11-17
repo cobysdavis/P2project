@@ -1,4 +1,4 @@
-function [dronepos1,dronepos2] = startdrones(intensity, matrixDim)
+function [dronepos] = startdrones(intensity, matrixDim,dronenum)
 sumx=0;
 sumy=0;
 sumt=0;
@@ -15,8 +15,8 @@ end
 xcm=floor(sumx/sumt);
 ycm=floor(sumy/sumt);
 
-dronepos1=[(xcm+1) (ycm+1)];
-dronepos2=[(xcm-1) (ycm-1)];
+dronepos=[(xcm+dronenum) (ycm+dronenum)];
+
 
 end
 

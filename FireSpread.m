@@ -1,27 +1,21 @@
 
 
-matrixDim=50; %Sets dimensions of square forest matrix
-
-position = zeros(matrixDim,matrixDim);
-updatedPosition = zeros(matrixDim,matrixDim);
+matrixDim=10; %Sets dimensions of square forest matrix
+fireposition = zeros(matrixDim,matrixDim);
+updatedfirePosition = zeros(matrixDim,matrixDim);
 timeonfire = zeros(matrixDim,matrixDim);
 intensity = zeros(matrixDim,matrixDim);
-
-
-
-
 burntime=20;
+k=1;  %Initializing step incrementer
+steps = 15;    %Number of Steps going to be Simulated
+fireposition(2,2)=1; %starting initial fire
+fireposition(8,8)=1; %starting initial fire
+updatedfirePosition=fireposition;
 
-k = 1;  %Initializing step incrementer
+dronematrix=zeros(matrixDim,matrixDim);
+dronenum1=1;  %drone 1 is associated with #1
+dronenum2=2;  %drone 2 is associated with #2
 
-steps = 50;    %Number of Steps going to be Simulated
-
-position(5,5)=1; %starting initial fire
-position(35,35)=1; %starting initial fire
-
-%
-
-updatedPosition=position;
 
 % probN=0.85;
 % probS=0.05;
@@ -48,7 +42,7 @@ probSE = wind(8);
 while k<steps  
     for i=1:matrixDim
         for j=1:matrixDim
-            if position(i,j)==1 %if main matrix has a one set indices i and j
+            if fireposition(i,j)==1 %if main matrix has a one set indices i and j
                 a=i;
                 b=j;
                 timeonfire(i,j)=timeonfire(i,j)+1;
@@ -62,147 +56,147 @@ while k<steps
          
                 if a==1 && b==1
                     if probCatch(probS)
-                        updatedPosition(a+1,b)=1; 
+                        updatedfirePosition(a+1,b)=1; 
                     end
                     if probCatch(probE)
-                        updatedPosition(a,b+1)=1;
+                        updatedfirePosition(a,b+1)=1;
                     end
                     if probCatch(probSE)
-                        updatedPosition(a+1,b+1)=1;
+                        updatedfirePosition(a+1,b+1)=1;
                     end
                 elseif a==1 && b==matrixDim
                     if probCatch(probS)
-                        updatedPosition(a+1,b)=1;
+                        updatedfirePosition(a+1,b)=1;
                     end
                     if probCatch(probW)
-                        updatedPosition(a,b-1)=1;
+                        updatedfirePosition(a,b-1)=1;
                     end
                     if probCatch(probSW)
-                        updatedPosition(a+1,b-1)=1;
+                        updatedfirePosition(a+1,b-1)=1;
                     end
        
                 elseif a==matrixDim && b==1
                     if probCatch(probN)
-                        updatedPosition(a-1,b)=1;
+                        updatedfirePosition(a-1,b)=1;
                     end
                     if probCatch(probE)
-                        updatedPosition(a,b+1)=1;
+                        updatedfirePosition(a,b+1)=1;
                     end
                     if probCatch(probNE)
-                            updatedPosition(a-1,b+1)=1;
+                            updatedfirePosition(a-1,b+1)=1;
                     end
            
                 elseif a==matrixDim && b==matrixDim
                     if probCatch(probN)
-                        updatedPosition(a-1,b)=1;
+                        updatedfirePosition(a-1,b)=1;
                     end
                     if probCatch(probW)
-                        updatedPosition(a,b-1)=1;
+                        updatedfirePosition(a,b-1)=1;
                     end
                     if probCatch(probNW)
-                        updatedPosition(a-1,b-1)=1;
+                        updatedfirePosition(a-1,b-1)=1;
                     end
        
                 elseif a==1 && (b~=matrixDim && b~=1)
                     if probCatch(probS)
-                        updatedPosition(a+1,b)=1;
+                        updatedfirePosition(a+1,b)=1;
                     end
                     if probCatch(probW)
-                        updatedPosition(a,b-1)=1;
+                        updatedfirePosition(a,b-1)=1;
                     end
                     if probCatch(probE)
-                        updatedPosition(a,b+1)=1;
+                        updatedfirePosition(a,b+1)=1;
                     end
                     if probCatch(probSW)
-                        updatedPosition(a+1,b-1)=1;
+                        updatedfirePosition(a+1,b-1)=1;
                     end
                     if probCatch(probSE)
-                        updatedPosition(a+1,b+1)=1;
+                        updatedfirePosition(a+1,b+1)=1;
                     end
 
                 elseif a==matrixDim && (b~=matrixDim && b~=1)
                     if probCatch(probN)
-                        updatedPosition(a-1,b)=1;
+                        updatedfirePosition(a-1,b)=1;
                     end      
                     if probCatch(probW)
-                        updatedPosition(a,b-1)=1;
+                        updatedfirePosition(a,b-1)=1;
                     end
                     if probCatch(probE)
-                        updatedPosition(a,b+1)=1;
+                        updatedfirePosition(a,b+1)=1;
                     end
                     if probCatch(probNE)
-                        updatedPosition(a-1,b+1)=1;
+                        updatedfirePosition(a-1,b+1)=1;
                     end
                     if probCatch(probNW)
-                        updatedPosition(a-1,b-1)=1;
+                        updatedfirePosition(a-1,b-1)=1;
                     end
                     
                 elseif b==matrixDim && (a~=1 && a~=matrixDim)
                     if probCatch(probN)
-                        updatedPosition(a-1,b)=1;
+                        updatedfirePosition(a-1,b)=1;
                     end
                     if probCatch(probS)
-                        updatedPosition(a+1,b)=1;
+                        updatedfirePosition(a+1,b)=1;
                     end
                     if probCatch(probW)
-                        updatedPosition(a,b-1)=1;
+                        updatedfirePosition(a,b-1)=1;
                     end
                     if probCatch(probNW)
-                        updatedPosition(a-1,b-1)=1;
+                        updatedfirePosition(a-1,b-1)=1;
                     end
                     if probCatch(probSW)
-                        updatedPosition(a+1,b-1)=1;
+                        updatedfirePosition(a+1,b-1)=1;
                     end
                     
                 elseif b==1 && (a~=1 && a~=matrixDim)
                     if probCatch(probN)     
-                        updatedPosition(a-1,b)=1;
+                        updatedfirePosition(a-1,b)=1;
                     end
                     if probCatch(probS)
-                        updatedPosition(a+1,b)=1;
+                        updatedfirePosition(a+1,b)=1;
                     end
                     if probCatch(probE)
-                        updatedPosition(a,b+1)=1;
+                        updatedfirePosition(a,b+1)=1;
                     end
                     if probCatch(probNE)
-                        updatedPosition(a-1,b+1)=1;
+                        updatedfirePosition(a-1,b+1)=1;
                     end
                     if probCatch(probSE)
-                        updatedPosition(a+1,b+1)=1;
+                        updatedfirePosition(a+1,b+1)=1;
                     end   
            
                 elseif a~=1 && a~=matrixDim && b~=1 && b~=matrixDim
                     if probCatch(probN)
-                        updatedPosition(a-1,b)=1;
+                        updatedfirePosition(a-1,b)=1;
                     end
                     if probCatch(probS)
-                        updatedPosition(a+1,b)=1;
+                        updatedfirePosition(a+1,b)=1;
                     end
                     if probCatch(probE)
-                        updatedPosition(a,b+1)=1; 
+                        updatedfirePosition(a,b+1)=1; 
                     end
                     if probCatch(probW)
-                        updatedPosition(a,b-1)=1; 
+                        updatedfirePosition(a,b-1)=1; 
                     end
                     if probCatch(probNW)
-                        updatedPosition(a-1,b-1)=1;
+                        updatedfirePosition(a-1,b-1)=1;
                     end 
                     if probCatch(probNE)
-                        updatedPosition(a-1,b+1)=1;
+                        updatedfirePosition(a-1,b+1)=1;
                     end
                     if probCatch(probSW)
-                        updatedPosition(a+1,b-1)=1;
+                        updatedfirePosition(a+1,b-1)=1;
                     end
                     if probCatch(probSE)
-                        updatedPosition(a+1,b+1)=1;
+                        updatedfirePosition(a+1,b+1)=1;
                     end 
                 end
             end
         end
     end
     
-    position=updatedPosition;
-    figure1=mesh(intensity);
+    fireposition=updatedfirePosition;
+    mesh(intensity);
     pcolor(intensity);
     xlabel('y');
     ylabel('x');
@@ -211,41 +205,37 @@ while k<steps
     k=k+1;
 
 end
-save M
-intensity;
 
+dronepos1=startdrones(intensity,matrixDim,dronenum1); %call startdrone function to initialize initial position for both drones
+dronepos2=startdrones(intensity,matrixDim,dronenum2);
 
-[dronepos1,dronepos2]=startdrones(intensity,matrixDim)
+for i=1:3
+closest=findclosest(intensity,matrixDim,dronepos1,dronepos2); % assoacitaes each point to the drone closest to it
 
-closest=findclosest(intensity,matrixDim,dronepos1(1),dronepos1(2),dronepos2(1),dronepos2(2));
-figure;mesh(closest);
-pcolor(closest);
-hold on
+CMfire1=cm(intensity,closest,matrixDim,dronenum1); % finds centre of mass of firey area associated with drones 1 and 2 repesctively
+CMfire2=cm(intensity,closest,matrixDim,dronenum2);
 
-[CMfire1,CMfire2]=cm(intensity,closest,matrixDim);
+direction1 = direction(dronepos1,CMfire1);%determines which directions the drones must travel to get to the cms of the fires
+direction2 = direction(dronepos2,CMfire2);
 
-[direction1] = direction(dronepos1,CMfire1);
-[direction2] = direction(dronepos2,CMfire2);
+percentagemove=0.25; % determines the speed of their movement
 
-percentagemove=0.25;
+distance1=movement(direction1,percentagemove); %finds the distance they must travel
+distance2=movement(direction2,percentagemove);
 
-[distance1]=movement(direction1,percentagemove);
-[distance2]=movement(direction2,percentagemove);
+dronematrix(dronepos1(1),dronepos1(2))=dronenum1; %sets inital colour to each drone
+dronematrix(dronepos2(1),dronepos2(2))=dronenum2;
 
-closest(dronepos1(1),dronepos1(2))=4;
-closest(dronepos2(1),dronepos2(2))=6;
-figure;mesh(closest);
-pcolor(closest);
-hold on
+figure;mesh(dronematrix);
+pcolor(dronematrix);
+hold off
+L(i)=getframe;
 
-dronepos1(1)=dronepos1(1)+distance1(1);
-dronepos1(2)=dronepos1(1)+distance1(2);
+dronematrix=zeros(matrixDim,matrixDim); %resets drone matrix
 
-dronepos2(1)=dronepos2(1)+distance2(1);
-dronepos2(2)=dronepos2(1)+distance2(2);
+dronepos1=movedrone(distance1,dronepos1);%updates drones to new position
+dronepos2=movedrone(distance2,dronepos2);
 
-closest(dronepos1(1),dronepos1(2))=4;
-closest(dronepos2(1),dronepos2(2))=6;
-figure;mesh(closest);
-pcolor(closest);
-hold on
+dronematrix(dronepos1(1),dronepos1(2))=dronenum1;
+dronematrix(dronepos2(1),dronepos2(2))=dronenum2;
+end
