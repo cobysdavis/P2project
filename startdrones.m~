@@ -11,12 +11,12 @@ for i=1:matrixDim
         end
     end
 end
- spacing=floor(matrixDim/(N+1));
+% spacing=floor(matrixDim/(N+1));
 xcm=floor(sumx/sumt);
 ycm=floor(sumy/sumt);
 
-dronepos=[(spacing*dronenum) (spacing*dronenum)];
-%dronepos=[(xcm+5*dronenum) (ycm+dronenum)];
+% dronepos=[(spacing*dronenum) (spacing*dronenum)];
+dronepos=[(xcm+5*dronenum)*5 (ycm+5*dronenum)-N*5];
 
 
 end

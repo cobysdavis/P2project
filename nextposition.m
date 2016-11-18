@@ -1,6 +1,6 @@
 function [dronematrix,dronepositions] = nextposition(N,intensity,dronepositions,matrixDim,percentagemove,dronenum)
 
-closest=findclosest(intensity,matrixDim,dronepositions,N)% assoacitaes each point to the drone closest to it
+closest=findclosest(intensity,matrixDim,dronepositions,N);% assoacitaes each point to the drone closest to it
 CM=zeros(N,2);
 directions=zeros(N,2);
 distance=zeros(N,2);

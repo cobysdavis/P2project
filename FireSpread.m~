@@ -1,37 +1,42 @@
 
 
-matrixDim=10; %Sets dimensions of square forest matrix
+matrixDim=200; %Sets dimensions of square forest matrix
 fireposition = zeros(matrixDim,matrixDim);
 updatedfirePosition = zeros(matrixDim,matrixDim);
 timeonfire = zeros(matrixDim,matrixDim);
 intensity = zeros(matrixDim,matrixDim);
 burntime=20;
 k=1;  %Initializing step incrementer
-steps = 100;    %Number of Steps going to be Simulated
+steps = 30;    %Number of Steps going to be Simulated
+velocity=zeros(N,2);
+movementTotal=zeros(N,2);
+fireposition(18,18)=1; %starting initial fire
+fireposition(50,90)=1; %starting initial fire
+fireposition(40,120)=1; %starting initial fire
 
-fireposition(2,2)=1; %starting initial fire
-fireposition(5,5)=1; %starting initial fire
-fireposition(7,7)=1; %starting initial fire
+
+
 
 updatedfirePosition=fireposition;
-
+m=zeros(N,1);
 N=3; %number of drones used
+initialt=zeros(N,1);
 dronematrix=zeros(matrixDim,matrixDim);
 dronenum=zeros(N,1);
 dronepositions=zeros(N,2);
+for i=1:N
+dronenum(i)=i; %associates each drone with a number/colour
+dronepositions(i,:)=startdrones(intensity,matrixDim,dronenum(i),N);%call startdrone function to initialize initial coordinates for all drones
+dronematrix(dronepositions(i,1),dronepositions(i,2))=dronenum(i);%sets initia positions onto the position matrix
+end
+percentagemove=0.1; % determines the speed of their movement
 
-% probN=0.85;
-% probS=0.05;
-% probE=0.34;
-% probW=0.23;
-% probNW=0.22;
-% probSW=0.09;
-% probNE=0.34;
-% probSE=0.9;
+% windSpeed, WindDirection, spreadProb
+windConditions = [50 pi 0.1];
 windSpeed=50;
-windDirection=3*pi/2.5;
-spreadProb = 0.05;
-wind= windBias(windSpeed, windDirection, spreadProb) ;
+windDirection=pi;
+spreadProb = 0.1;
+wind= windBias(windSpeed,windDirection,spreadProb) ;%returns a vector that is the wind magnitudes in all directions
 probN = wind(1);
 probS = wind(2);
 probW = wind(3);
@@ -206,33 +211,46 @@ while k<steps
     hold off
     M(k)=getframe;
     k=k+1;
-
 end
 
-for i=1:N
-    dronenum(i)=i;
-end
-
-for i=1:N
-dronepositions(i,:)=startdrones(intensity,matrixDim,dronenum(i),N);%call startdrone function to initialize initial position for both drones
-end
-
-percentagemove=0.10; % determines the speed of their movement
 closest=findclosest(intensity,matrixDim,dronepositions,N); % assoacitaes each point to the drone closest to it
 mesh(closest);
 pcolor(closest);
-hold off
+hold on
 
-for i=1:N
-dronematrix(dronepositions(i,1),dronepositions(i,2))=dronenum(i); %sets inital colour to each drone
+for i=1:50
+oldpositions=dronepositions;
+[dronematrix,dronepositions]=nextposition(N,intensity,dronepositions,matrixDim,percentagemove,dronenum);
+for j=1:N
+if (abs(dronepositions(j,:)-oldpositions(j,:)))<3
+    if m(j)==0
+        initialt(j)=i;
+        m(j)=1;
+    end
+    velocity(j,:)=velocity(j,:)+(dronepositions(j,:)-oldpositions(j,:));
 end
 
-for i=1:20
-[dronematrix,dronepositions]=nextposition(N,intensity,dronepositions,matrixDim,percentagemove,dronenum);
+for l=1:3
+velocityavg(l,:)=velocity(l,:)/(i-initialt(l))
+end
 mesh(dronematrix);
 pcolor(dronematrix);
+xlabel('y');
+ylabel('x');
 hold off
 M(i)=getframe;
 end
+end
 
-close all
+
+
+
+
+
+
+
+
+
+
+ 
+

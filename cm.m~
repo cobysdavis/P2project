@@ -17,6 +17,8 @@ for i=1:matrixDim
     end
 end
 
+if sumt==1
+    CM=cm(
 xcm=(sumx/sumt);
 ycm=(sumy/sumt);
 
