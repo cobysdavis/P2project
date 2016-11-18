@@ -7,15 +7,18 @@ timeonfire = zeros(matrixDim,matrixDim);
 intensity = zeros(matrixDim,matrixDim);
 burntime=20;
 k=1;  %Initializing step incrementer
-steps = 5;    %Number of Steps going to be Simulated
+steps = 100;    %Number of Steps going to be Simulated
+
 fireposition(2,2)=1; %starting initial fire
-fireposition(8,8)=1; %starting initial fire
+fireposition(5,5)=1; %starting initial fire
+fireposition(7,7)=1; %starting initial fire
+
 updatedfirePosition=fireposition;
 
+N=3; %number of drones used
 dronematrix=zeros(matrixDim,matrixDim);
-dronenum1=1;  %drone 1 is associated with #1
-dronenum2=2;  %drone 2 is associated with #2
-
+dronenum=zeros(N,1);
+dronepositions=zeros(N,2);
 
 % probN=0.85;
 % probS=0.05;
@@ -201,40 +204,35 @@ while k<steps
     xlabel('y');
     ylabel('x');
     hold off
-    M(k) = getframe;
+    M(k)=getframe;
     k=k+1;
 
 end
 
-closest=findclosest(intensity,matrixDim,dronepos1,dronepos2); % assoacitaes each point to the drone closest to it
-figure;mesh(closest);
+for i=1:N
+    dronenum(i)=i;
+end
+
+for i=1:N
+dronepositions(i,:)=startdrones(intensity,matrixDim,dronenum(i),N);%call startdrone function to initialize initial position for both drones
+end
+
+percentagemove=0.10; % determines the speed of their movement
+closest=findclosest(intensity,matrixDim,dronepositions,N); % assoacitaes each point to the drone closest to it
+mesh(closest);
 pcolor(closest);
-hold on
+hold off
 
-CMfire1=cm(intensity,closest,matrixDim,dronenum1); % finds centre of mass of firey area associated with drones 1 and 2 repesctively
-CMfire2=cm(intensity,closest,matrixDim,dronenum2);
+for i=1:N
+dronematrix(dronepositions(i,1),dronepositions(i,2))=dronenum(i); %sets inital colour to each drone
+end
 
-direction1 = direction(dronepos1,CMfire1);%determines which directions the drones must travel to get to the cms of the fires
-direction2 = direction(dronepos2,CMfire2);
-
-percentagemove=0.25; % determines the speed of their movement
-
-distance1=movement(direction1,percentagemove); %finds the distance they must travel
-distance2=movement(direction2,percentagemove);
-
-
-dronematrix(dronepos1(1),dronepos1(2))=dronenum1; %sets inital colour to each drone
-dronematrix(dronepos2(1),dronepos2(2))=dronenum2;
-
-figure;mesh(dronematrix);
+for i=1:20
+[dronematrix,dronepositions]=nextposition(N,intensity,dronepositions,matrixDim,percentagemove,dronenum);
+mesh(dronematrix);
 pcolor(dronematrix);
+hold off
+M(i)=getframe;
+end
 
-dronematrix=zeros(matrixDim,matrixDim); %resets drone matrix
-
-dronepos1=movedrone(distance1,dronepos1);%updates drones to new position
-dronepos2=movedrone(distance2,dronepos2);
-
-dronematrix(dronepos1(1),dronepos1(2))=dronenum1;
-dronematrix(dronepos2(1),dronepos2(2))=dronenum2;
-figure;mesh(dronematrix);
-pcolor(dronematrix);
+close all

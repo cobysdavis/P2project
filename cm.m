@@ -1,4 +1,4 @@
-function [CM] = cm(intensity,closest,matrixDim,dronenum)
+function [CM] = cm(intensity,closest,matrixDim,dronenum,N)
 
 sumx=0;
 sumy=0;
@@ -15,11 +15,12 @@ for i=1:matrixDim
     end
 end
 
+
 xcm=floor(sumx/sumt);
 ycm=floor(sumy/sumt);
 
-
 CM=[xcm ycm];
+
 
 end
 

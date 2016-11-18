@@ -1,4 +1,4 @@
-function [dronepos] = startdrones(intensity, matrixDim,dronenum)
+function [dronepos] = startdrones(intensity, matrixDim,dronenum, N)
 sumx=0;
 sumy=0;
 sumt=0;
@@ -11,11 +11,11 @@ for i=1:matrixDim
         end
     end
 end
-
+spacing=floor(matrixDim/(N+1));
 xcm=floor(sumx/sumt);
 ycm=floor(sumy/sumt);
 
-dronepos=[(xcm+dronenum) (ycm+dronenum)];
+dronepos=[(spacing*dronenum) (spacing*dronenum)];
 
 
 end

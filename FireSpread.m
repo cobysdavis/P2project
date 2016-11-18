@@ -1,21 +1,24 @@
 
 
-matrixDim=100; %Sets dimensions of square forest matrix
+matrixDim=20; %Sets dimensions of square forest matrix
 fireposition = zeros(matrixDim,matrixDim);
 updatedfirePosition = zeros(matrixDim,matrixDim);
 timeonfire = zeros(matrixDim,matrixDim);
 intensity = zeros(matrixDim,matrixDim);
 burntime=20;
 k=1;  %Initializing step incrementer
-steps = 45;    %Number of Steps going to be Simulated
+steps = 10;    %Number of Steps going to be Simulated
+
+fireposition(5,5)=1; %starting initial fire
 fireposition(15,15)=1; %starting initial fire
-fireposition(70,95)=1; %starting initial fire
+fireposition(10,10)=1; %starting initial fire
+
 updatedfirePosition=fireposition;
 
+N=3; %number of drones used
 dronematrix=zeros(matrixDim,matrixDim);
-dronenum1=1;  %drone 1 is associated with #1
-dronenum2=2;  %drone 2 is associated with #2
-
+dronenum=zeros(N,1);
+dronepositions=zeros(N,2);
 
 % probN=0.85;
 % probS=0.05;
@@ -206,22 +209,36 @@ while k<steps
 
 end
 
-dronepos1=startdrones(intensity,matrixDim,dronenum1); %call startdrone function to initialize initial position for both drones
-dronepos2=startdrones(intensity,matrixDim,dronenum2);
-percentagemove=0.25; % determines the speed of their movement
-figure;mesh(closest);
+for i=1:N
+    dronenum(i)=i;
+end
+
+for i=1:N
+dronepositions(i,:)=startdrones(intensity,matrixDim,dronenum(i),N);%call startdrone function to initialize initial position for both drones
+end
+
+percentagemove=1; % determines the speed of their movement
+closest=findclosest(intensity,matrixDim,dronepositions,N); % assoacitaes each point to the drone closest to it
+mesh(closest);
 pcolor(closest);
 hold off
 
-dronematrix(dronepos1(1),dronepos1(2))=dronenum1; %sets inital colour to each drone
-dronematrix(dronepos2(1),dronepos2(2))=dronenum2;
-
-for i=1:10
-[dronematrix,dronepos1,dronepos2]=nextposition(intensity,dronepos1,dronepos2,matrixDim,percentagemove,dronenum1,dronenum2);
-mesh(dronematrix);
-pcolor(dronematrix);
-hold off
-M(i)=getframe;
+for i=1:N
+dronematrix(dronepositions(i,1),dronepositions(i,2))=dronenum(i) %sets inital colour to each drone
 end
 
-close all
+
+[dronematrix,dronepositions]=nextposition(N,intensity,dronepositions,matrixDim,percentagemove,dronenum)
+
+figure;mesh(dronematrix);
+pcolor(dronematrix);
+[dronematrix,dronepositions]=nextposition(N,intensity,dronepositions,matrixDim,percentagemove,dronenum)
+
+
+figure;mesh(dronematrix);
+pcolor(dronematrix);
+% hold off
+% M(l)=getframe;
+
+ 
+%close all
