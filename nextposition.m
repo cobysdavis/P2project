@@ -1,4 +1,4 @@
-function [dronematrix,dronepositions] = nextposition(N,intensity,dronepositions,matrixDim,percentagemove,dronenum)
+function [dronematrix,dronepositions,closest,CM] = nextposition(N,intensity,dronepositions,matrixDim,percentagemove,dronenum)
 
 closest=findclosest(intensity,matrixDim,dronepositions,N);% assoacitaes each point to the drone closest to it
 CM=zeros(N,2);
@@ -7,7 +7,7 @@ distance=zeros(N,2);
 dronematrix=zeros(matrixDim,matrixDim);
 
 for i=1:N
-CM(i,:)=cm(intensity,closest,matrixDim,dronenum(i),N); % finds centre of mass of firey area associated with drones 1 and 2 repesctively
+CM(i,:)=cm(intensity,closest,matrixDim,dronenum(i),N,dronepositions); % finds centre of mass of firey area associated with drones 1 and 2 repesctively
 
 directions(i,:)=direction(dronepositions(i,:),CM(i,:));%determines which directions the drones must travel to get to the cms of the fires
 

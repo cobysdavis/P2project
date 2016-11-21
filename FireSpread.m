@@ -1,21 +1,21 @@
 
-
-matrixDim=20; %Sets dimensions of square forest matrix
+clear all;
+N=3; %number of drones used
+F=5;
+burntime=20; %how long the fire can go for without burning out
+k=1;  %Initializing step incrementer
+steps = 20;    %Number of Steps going to be Simulated
+matrixDim=60; %Sets dimensions of square forest matrix
 fireposition = zeros(matrixDim,matrixDim);
 updatedfirePosition = zeros(matrixDim,matrixDim);
 timeonfire = zeros(matrixDim,matrixDim);
 intensity = zeros(matrixDim,matrixDim);
-burntime=20;
-k=1;  %Initializing step incrementer
-steps = 10;    %Number of Steps going to be Simulated
-
-fireposition(17,5)=1; %starting initial fire
-fireposition(14,12)=1; %starting initial fire
-fireposition(5,9)=1; %starting initial fire
-
+[startpos fireposition]=startfires(F,matrixDim);
+fireinitial=startpos;
+% fireposition(45,85)=1;
+% fireposition(40,20)=1;
+% fireposition(35,90)=1;
 updatedfirePosition=fireposition;
-
-N=3; %number of drones used
 m=zeros(N,1);
 velocity=zeros(N,2);
 movementTotal=zeros(N,2);
@@ -28,7 +28,7 @@ dronenum(i)=i; %associates each drone with a number/colour
 dronepositions(i,:)=startdrones(intensity,matrixDim,dronenum(i),N);%call startdrone function to initialize initial coordinates for all drones
 dronematrix(dronepositions(i,1),dronepositions(i,2))=dronenum(i);%sets initia positions onto the position matrix
 end
-percentagemove=0.7; % determines the speed of their movement
+percentagemove=0.3; % determines the speed of their movement
 
 % windSpeed, WindDirection, spreadProb
 windConditions = [50 pi 0.1];
@@ -202,18 +202,27 @@ while k<steps
         end
     end
     
-    fireposition=updatedfirePosition;
-%     mesh(intensity);
-%     pcolor(intensity);
-%     xlabel('y');
-%     ylabel('x');
-%     hold off
-%     M(k)=getframe;
-
+fireposition=updatedfirePosition;
+subplot(2,2,1)
+mesh(intensity);
+pcolor(intensity);
+xlabel('y');
+ylabel('x');
+hold off
+M(k)=getframe;
 
 oldpositions=dronepositions;
-[dronematrix,dronepositions]=nextposition(N,intensity,dronepositions,matrixDim,percentagemove,dronenum);
-dronepositions;
+[dronematrix,dronepositions,closest,CM]=nextposition(N,intensity,dronepositions,matrixDim,percentagemove,dronenum);
+subplot(2,2,2)
+mesh(closest);
+pcolor(closest);
+xlabel('y');
+ylabel('x');
+hold off
+C(k)=getframe;
+CM;
+
+
 for j=1:N
 if (abs(dronepositions(j,:)-oldpositions(j,:)))<3 %threshhold needs experienting
     if m(j)==0
@@ -222,7 +231,7 @@ if (abs(dronepositions(j,:)-oldpositions(j,:)))<3 %threshhold needs experienting
     end
     velocity(j,:)=velocity(j,:)+(dronepositions(j,:)-oldpositions(j,:));
 end
-
+subplot(2,2,3)
 mesh(dronematrix);
 pcolor(dronematrix);
 xlabel('y');
@@ -233,15 +242,21 @@ end
 velocity;
 k=k+1;
 end
-
 for l=1:N
-velocityavg(l,:)=velocity(l,:)/(k-1-initialt(l));
+    velocityavg(l,:)=velocity(l,:)/(k-1-initialt(l));
 end
+fireVel=firespeed(fireinitial,k,N,CM);
+for i=1:N
+    fireMag(i)=((fireVel(i,1))^2+(fireVel(i,2))^2)^0.5;
+end
+droneVel=velocityavg;
+error=(fireVel-droneVel);
+for i=1:N
+magError(i)=((error(i,1))^2+(error(i,2))^2)^0.5;
+percentError(i)=magError(i)/fireMag(i);
+end
+percentError
 
-fireVel=velocityavg
-
-
-
-
+% close all
  
 

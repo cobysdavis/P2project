@@ -1,4 +1,4 @@
-function [CM] = cm(intensity,closest,matrixDim,dronenum,N)
+function [CM] = cm(intensity,closest,matrixDim,dronenum,N,dronepositions)
 
 sumx=1;
 sumy=1;
@@ -17,11 +17,13 @@ for i=1:matrixDim
     end
 end
 
+if sumt==1
+    [xcm ycm]=dronecm(dronepositions,N);
+else
 xcm=(sumx/sumt);
 ycm=(sumy/sumt);
-
+end
 CM=[ceil(xcm) ceil(ycm)];
-
 
 end
 
