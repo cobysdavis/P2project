@@ -1,10 +1,10 @@
 
 clear all;
-N=3; %number of drones used
+N=5; %number of drones used
 F=5;
 burntime=20; %how long the fire can go for without burning out
 k=1;  %Initializing step incrementer
-steps = 20;    %Number of Steps going to be Simulated
+steps = 30;    %Number of Steps going to be Simulated
 matrixDim=60; %Sets dimensions of square forest matrix
 fireposition = zeros(matrixDim,matrixDim);
 updatedfirePosition = zeros(matrixDim,matrixDim);
@@ -251,11 +251,13 @@ for i=1:N
 end
 droneVel=velocityavg;
 error=(fireVel-droneVel);
+sumError=0;
 for i=1:N
 magError(i)=((error(i,1))^2+(error(i,2))^2)^0.5;
 percentError(i)=magError(i)/fireMag(i);
+sumError=(percentError(i))^2+sumError;
 end
-percentError
+totalError=sumError^0.5
 
 % close all
  
