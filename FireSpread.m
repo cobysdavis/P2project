@@ -3,20 +3,20 @@
 clear all;
 q=0;
 N=1; %number of drones used
-F=3;
+F=5;
 burntime=10; %how long the fire can go for without burning out
 k=1;  %Initializing step incrementer
-steps =40;   %Number of Steps going to be Simulated
+steps =45;   %Number of Steps going to be Simulated
 matrixDim=100; %Sets dimensions of square forest matrix
 fireposition = zeros(matrixDim,matrixDim);
 updatedfirePosition = zeros(matrixDim,matrixDim);
 timeonfire = zeros(matrixDim,matrixDim);
 intensity = zeros(matrixDim,matrixDim);
-% [startpos fireposition]=startfires(F,matrixDim);
-% fireinitial=startpos;
-fireinitial=[80,50;20,50];
-fireposition(80,50)=1;
-fireposition(20,50)=1;
+[startpos fireposition]=startfires(F,matrixDim);
+fireinitial=startpos;
+droneRad=17; %factor that matrixDim is divided by in lockedOn, determines drones vewiing radius
+droneSum=300; %the minimum sum that a drone has to have in its radius to be considered locked on
+minMove=4; %robot must be moving this distance every time step in order to not be considered locked on
 updatedfirePosition=fireposition;
 m=zeros(N,1); %when to start coutning velocity
 velocity=zeros(N,2);
@@ -227,22 +227,14 @@ hold off
 C(k)=getframe;
 
 for j=1:N
-locked(j)=isLockedon(intensity,dronepositions(j,:),matrixDim);
+locked(j)=isLockedon(intensity,dronepositions(j,:),matrixDim,droneRad,droneSum);
 if locked(j)==1 && m(j)~=0
     m(j)=1;
     initialt(j)=k;
 end
     velocity(j,:)=velocity(j,:)+(dronepositions(j,:)-oldpositions(j,:));
 end
-% 
-% for j=1:N
-% if (abs(dronepositions(j,:)-oldpositions(j,:)))<2 %threshhold needs experienting
-%     if m(j)==0
-%         initialt(j)=k;
-%         m(j)=1;
-%     end
-%     velocity(j,:)=velocity(j,:)+(dronepositions(j,:)-oldpositions(j,:));
-% end
+
 subplot(2,2,3)
 mesh(dronematrix);
 pcolor(dronematrix);
@@ -251,11 +243,11 @@ ylabel('x');
 hold off
 B(k)=getframe;
 
-timestep=mod(k,10)
+timestep=mod(k,6);
 
 if timestep==1
 for i=1:N
-    if locked(i)==0 && abs(dronepositions(i,1)-oldpositions(i,1))<2 && abs(dronepositions(i,2)-oldpositions(i,2))<2
+    if locked(i)==0 && abs(dronepositions(i,1)-oldpositions(i,1))<minMove && abs(dronepositions(i,2)-oldpositions(i,2))<minMove
         q=1;
         dronenum(N+1)=N+1; %associates each drone with a number/colour
         dronepositions(N+1,:)=[matrixDim/2 matrixDim/2];%call startdrone function to initialize initial coordinates for all drones
@@ -264,38 +256,44 @@ for i=1:N
 end
 end
 if q==1
-    N=N+1
-    velocity=[velocity;zeros(1,2)]
-    locked=[locked 0]
-    m=[m 0]
+    N=N+1;
+    velocity=[velocity;zeros(1,2)];
+    locked=[locked 0];
+    m=[m 0];
     initialt=[initialt 0];
 end
 q=0;
-k=k+1;
+k=k+1
+save B
+save M
+save C
 end
 
-droneVel=zeros(N,2);
-
-for l=1:N
-    droneVel(l,:)=velocity(l,:)/(k-1-initialt(l));
-end
-
-fireVel=firespeed(fireinitial,k,N,CM);
-
-for i=1:N
-    fireMag(i)=((fireVel(i,1))^2+(fireVel(i,2))^2)^0.5;
-end
-
-diff=(fireVel-droneVel);
-sumError=0;
-
-for i=1:N
-magError(i)=((diff(i,1))^2+(diff(i,2))^2)^0.5;
-percentError(i)=(magError(i)/fireMag(i))*100;
-% sumError=(percentError(i))+sumError;
-end
-droneVel
-fireVel
-totalError=sumError;
+% droneVel=zeros(N,2);
+% 
+% for l=1:N
+%     droneVel(l,:)=velocity(l,:)/(k-1-initialt(l));
+% end
+% 
+% fireVel=firespeed(fireinitial,k,N,CM);
+% 
+% for i=1:N
+%     fireMag(i)=((fireVel(i,1))^2+(fireVel(i,2))^2)^0.5;
+% end
+% 
+% diff=(fireVel-droneVel);
+% sumError=0;
+% 
+% for i=1:N
+% magError(i)=((diff(i,1))^2+(diff(i,2))^2)^0.5;
+% percentError(i)=(magError(i)/fireMag(i))*100;
+% % sumError=(percentError(i))+sumError;
+% end
+% totalError=sumError;
 % close all
-
+subplot(2,2,1)
+movie(M,2)
+subplot(2,2,2)
+movie(C,2)
+subplot(2,2,3)
+movie(B,2)

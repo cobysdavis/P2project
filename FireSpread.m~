@@ -3,20 +3,19 @@
 clear all;
 q=0;
 N=1; %number of drones used
-F=3;
+F=4;
 burntime=10; %how long the fire can go for without burning out
 k=1;  %Initializing step incrementer
-steps =40;   %Number of Steps going to be Simulated
+steps =10;   %Number of Steps going to be Simulated
 matrixDim=100; %Sets dimensions of square forest matrix
 fireposition = zeros(matrixDim,matrixDim);
 updatedfirePosition = zeros(matrixDim,matrixDim);
 timeonfire = zeros(matrixDim,matrixDim);
 intensity = zeros(matrixDim,matrixDim);
-% [startpos fireposition]=startfires(F,matrixDim);
-% fireinitial=startpos;
-fireinitial=[80,50;20,50];
-fireposition(80,50)=1;
-fireposition(20,50)=1;
+[startpos fireposition]=startfires(F,matrixDim);
+fireinitial=startpos;
+
+
 updatedfirePosition=fireposition;
 m=zeros(N,1); %when to start coutning velocity
 velocity=zeros(N,2);
@@ -234,15 +233,7 @@ if locked(j)==1 && m(j)~=0
 end
     velocity(j,:)=velocity(j,:)+(dronepositions(j,:)-oldpositions(j,:));
 end
-% 
-% for j=1:N
-% if (abs(dronepositions(j,:)-oldpositions(j,:)))<2 %threshhold needs experienting
-%     if m(j)==0
-%         initialt(j)=k;
-%         m(j)=1;
-%     end
-%     velocity(j,:)=velocity(j,:)+(dronepositions(j,:)-oldpositions(j,:));
-% end
+
 subplot(2,2,3)
 mesh(dronematrix);
 pcolor(dronematrix);
@@ -253,9 +244,9 @@ B(k)=getframe;
 
 timestep=mod(k,10);
 
-if timestep==0
+if timestep==1
 for i=1:N
-    if locked(i)==0 && abs(dronepositions(i,1)-oldpositions(i,1))<2 && abs(dronepositions(i,2)-oldpositions(i,2))<2
+    if locked(i)==0 && abs(dronepositions(i,1)-oldpositions(i,1))<4 && abs(dronepositions(i,2)-oldpositions(i,2))<4
         q=1;
         dronenum(N+1)=N+1; %associates each drone with a number/colour
         dronepositions(N+1,:)=[matrixDim/2 matrixDim/2];%call startdrone function to initialize initial coordinates for all drones
@@ -263,17 +254,18 @@ for i=1:N
     end
 end
 end
-
 if q==1
-    N=N+1
-    velocity=[velocity;zeros(1,2)]
-    locked=[locked 0]
-    m=[m 0]
+    N=N+1;
+    velocity=[velocity;zeros(1,2)];
+    locked=[locked 0];
+    m=[m 0];
     initialt=[initialt 0];
 end
-
-
 q=0;
+k=k+1;
+save B
+save M
+save C
 end
 
 droneVel=zeros(N,2);
@@ -296,8 +288,11 @@ magError(i)=((diff(i,1))^2+(diff(i,2))^2)^0.5;
 percentError(i)=(magError(i)/fireMag(i))*100;
 % sumError=(percentError(i))+sumError;
 end
-droneVel
-fireVel
 totalError=sumError;
 % close all
-
+subplot(2,2,1)
+movie(M,2)
+subplot(2,2,2)
+movie(C,2)
+subplot(2,2,3)
+movie(B,2)
