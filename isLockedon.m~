@@ -1,0 +1,23 @@
+function [ locked ] = isLockedon( intensity,droneposition,matrixDim)
+bottom=floor(droneposition(1)+matrixDim/5)
+right=floor(droneposition(2)+matrixDim/5)
+top=floor(droneposition(1)-matrixDim/5)
+left=floor(droneposition(2)-matrixDim/5)
+sum=0
+for i=top:bottom
+    for j=left:right
+        if intensity(i,j)>0
+            sum=sum+closest(i,j)
+        end
+    end
+end
+
+if sum>10
+    locked=1;
+else
+    locked=0;
+end
+
+
+end
+
