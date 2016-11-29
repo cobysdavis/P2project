@@ -1,4 +1,4 @@
-function [ locked ] = isLockedon( intensity,droneposition,matrixDim,droneRad,droneSum)
+function [ locked ] = isLockedon(intensity,droneposition,matrixDim,droneRad,droneSum)
 sum=0;
 bottom=floor(droneposition(1)+matrixDim/droneRad);
 while bottom<2
