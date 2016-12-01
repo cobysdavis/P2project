@@ -1,5 +1,5 @@
 function [closest] = findclosest(intensity,matrixDim,dronepositions,N)
-% 
+% Function that
 
 closest=zeros(matrixDim,matrixDim);
 for i=1:matrixDim

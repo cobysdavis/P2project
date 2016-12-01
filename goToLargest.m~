@@ -1,4 +1,4 @@
-function [xcm ycm] = goToLargest(dronepositions,N)
+function [xcm ycm] = goToLargest(dronepositions,N,maxIndex)
 % Calculating the center of mass of the drone using the N x 2 Matrix
 % of the current positions of each drone 
 
@@ -14,8 +14,7 @@ function [xcm ycm] = goToLargest(dronepositions,N)
 % xcm=ceil(xtotal/N);
 % ycm=ceil(ytotal/N);
 
-random=ceil(randi([1 N],1,1));
-xcm=dronepositions(random,1);
-ycm=dronepositions(random,2);
+xcm=dronepositions(maxIndex,1)+1;
+ycm=dronepositions(maxIndex,2)+1;
 end
 

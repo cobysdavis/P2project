@@ -25,10 +25,12 @@ end
 % dronecm function
 % Otherwise, the center of mass is the location with average density of
 % intensity
-
+if sumt==1
+    [xcm ycm]=goToLargest(dronepositions,N,sumt);
+else
     xcm=(sumx/sumt);
     ycm=(sumy/sumt);
-
+end
 
 CM=[ceil(xcm) ceil(ycm)];
 
