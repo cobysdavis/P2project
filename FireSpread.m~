@@ -4,9 +4,9 @@ clear all;
 q=0;
 N=1; %number of drones used
 F=5;
-burntime=15; %how long the fire can go for without burning out
+burntime=10; %how long the fire can go for without burning out
 k=1;  %Initializing step incrementer
-steps =20;   %Number of Steps going to be Simulated
+steps =30;   %Number of Steps going to be Simulated
 matrixDim=100; %Sets dimensions of square forest matrix
 fireposition = zeros(matrixDim,matrixDim);
 updatedfirePosition = zeros(matrixDim,matrixDim);
@@ -14,9 +14,9 @@ timeonfire = zeros(matrixDim,matrixDim);
 intensity = zeros(matrixDim,matrixDim);
 [startpos fireposition]=startfires(F,matrixDim);
 fireinitial=startpos;
-droneRad=20; %factor that matrixDim is divided by in lockedOn, determines drones vewiing radius
-droneSum=100; %the minimum sum that a drone has to have in its radius to be considered locked on
-minMove=3; %robot must be moving this distance every time step in order to not be considered locked on
+droneRad=17; %factor that matrixDim is divided by in lockedOn, determines drones vewiing radius
+droneSum=300; %the minimum sum that a drone has to have in its radius to be considered locked on
+minMove=4; %robot must be moving this distance every time step in order to not be considered locked on
 updatedfirePosition=fireposition;
 m=zeros(N,1); %when to start coutning velocity
 velocity=zeros(N,2);
@@ -26,14 +26,14 @@ dronematrix=zeros(matrixDim,matrixDim);
 dronenum=zeros(N,1);
 dronepositions=zeros(N,2);
 locked=zeros(N,1);
-startDrones=zeros(N,2);
+
 for i=1:N
 dronenum(i)=i; %associates each drone with a number/colour
 dronepositions(i,:)=startdrones(intensity,matrixDim,dronenum(i),N);%call startdrone function to initialize initial coordinates for all drones
 dronematrix(dronepositions(i,1),dronepositions(i,2))=dronenum(i);%sets initia positions onto the position matrix
 end
 
-percentagemove=0.7; % determines the speed of their movement
+percentagemove=0.4; % determines the speed of their movement
 
 % windSpeed, WindDirection, spreadProb
 windConditions = [80 pi 0.4];
@@ -231,10 +231,8 @@ locked(j)=isLockedon(intensity,dronepositions(j,:),matrixDim,droneRad,droneSum);
 if locked(j)==1 && m(j)~=0
     m(j)=1;
     initialt(j)=k;
-    startDrones(j,:)=dronepositions(j,:);
 end
-locked
-startDrones
+    startDrones=drone
 end
 
 subplot(2,2,3)
@@ -245,7 +243,7 @@ ylabel('x');
 hold off
 B(k)=getframe;
 
-timestep=mod(k,3);
+timestep=mod(k,6);
 
 if timestep==1
 for i=1:N
@@ -263,7 +261,6 @@ if q==1
     locked=[locked 0];
     m=[m 0];
     initialt=[initialt 0];
-    startDrones=[startDrones;zeros(1,2)];
 end
 q=0;
 k=k+1
@@ -275,10 +272,9 @@ end
 droneVel=zeros(N,2);
 
 for l=1:N
-    droneVel(l,:)=(dronepositions(l,:)-startDrones(l,:))/(k-1-initialt(l));
+    droneVel(l,:)=velocity(l,:)/(k-1-initialt(l));
 end
-
-droneVel
+% 
 % fireVel=firespeed(fireinitial,k,N,CM);
 % 
 % for i=1:N
