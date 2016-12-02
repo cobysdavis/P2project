@@ -18,7 +18,8 @@ for j=1:N
     end
 end
 
-
+sumt
+maxIndex
 for i=1:N
     % Finds centre of mass of firey area associated with drones 1 and 2 
     % repesctively

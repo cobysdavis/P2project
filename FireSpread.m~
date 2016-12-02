@@ -248,7 +248,7 @@ for r=1:N
 locked(r)=isLockedon(intensity,dronepositions(r,:),matrixDim,droneRadFactor,droneSumFactor); %determines if a drone is currently locked on to a fire
 end
 
-droneCheckFrequency=mod(time,frequencyVar) %frequency that drone lockedon statuses are evaulated
+droneCheckFrequency=mod(time,frequencyVar); %frequency that drone lockedon statuses are evaulated
 
 
 subplot(2,2,3) %plot the position of each drone and save the frame
@@ -283,7 +283,7 @@ if droneCheckFrequency==3
     for i=1:N
     initPos(i,:)=dronepositions(i,:);
     end
-    initPos;
+    initPos
 end
 
 
