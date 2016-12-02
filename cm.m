@@ -26,8 +26,8 @@ end
 % Otherwise, the center of mass is the location with average density of
 % intensity
 
-    xcm=(sumx/sumt);
-    ycm=(sumy/sumt);
+xcm=(sumx/sumt);
+ycm=(sumy/sumt);
 
 
 CM=[ceil(xcm) ceil(ycm)];

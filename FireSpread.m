@@ -4,10 +4,10 @@ for B=1:1
 clear all;
 addDrone=0;
 N=1; %number of drones used
-F=3;
+F=2;
 burnTime=15; %how long the fire can go for without burning out and decreasing temperature a certain point
 time=1;  %Initializing step incrementer
-timeSteps =50;   %Number of Steps going to be Simulated
+timeSteps=50;   %Number of Steps going to be Simulated
 matrixDim=100; %Sets dimensions of square forest matrix
 updatedFirePosition = zeros(matrixDim,matrixDim);
 timeOnFire = zeros(matrixDim,matrixDim);
@@ -20,7 +20,7 @@ droneRadFactor=matrixDim/10; %factor that matrixDim is divided by in lockedOn, d
 droneSumFactor=matrixDim/4; %the minimum sum that a drone has to have in its radius to be considered locked on
 minMove=matrixDim/20; %robot must be moving this distance every time step in order to not be considered locked on
 percentagemove=0.8; % determines the speed of their movement. The percentage of distacnce they should move from their current position to their desired position)
-frequencyVar=5; %how often timestep resets to 0
+frequencyVar=7; %how often timestep resets to 0
 updatedFirePosition=fireposition; %initialize the first updated fire position matrix to be the old one
 startLocked=zeros(N,1); %tells code if drone has already locked on to it's target fire
 fireStatus=zeros(N,1); %stores whether or not a drone is in close proximity to a certain fire
@@ -33,6 +33,8 @@ dronenum=zeros(N,1); % associates a unique number to each drone
 dronepositions=zeros(N,2);%stores the coordinates of each drone
 locked=zeros(N,1); %stores the status of each drone if it is locked onto a fire or not
 startDrones=zeros(N,2);%the intial positions of each drone
+droneVel=zeros(N,2); %initialize the drone velocities
+
 
 for i=1:N
 dronenum(i)=i; %associates each drone with a number/colour
@@ -40,7 +42,7 @@ dronepositions(i,:)=startdrones(intensity,matrixDim,dronenum(i),N);%call startdr
 dronematrix(dronepositions(i,1),dronepositions(i,2))=dronenum(i);%sets initia positions onto the position matrix
 end
 
-windConditions = [80 pi 0.5]; % windSpeed, WindDirection, spreadProb
+windConditions = [80 pi/2 0.5]; % windSpeed, WindDirection, spreadProb
 windSpeed=50;
 windDirection=pi;
 spreadProb = 0.1;
@@ -229,9 +231,11 @@ oldpositions=dronepositions; %save old positions to be used later for velocity c
 %representing which fire tiles are associated to which drone, the centre of
 %intensity of each fire, and the sum of the intensity tiles for each fire
 %assocaited to a drone
-sumt
-maxIndex
-[dronepositions(maxIndex,1) dronepositions(maxIndex,2)]
+% 
+% sumt
+% maxIndex
+% [dronepositions(maxIndex,1) dronepositions(maxIndex,2)] 
+
 subplot(2,2,2) %plot the matrix called closest which shows which fires are closest to which drone
 mesh(closest);
 pcolor(closest);
@@ -242,13 +246,10 @@ C(time)=getframe;
 
 for r=1:N
 locked(r)=isLockedon(intensity,dronepositions(r,:),matrixDim,droneRadFactor,droneSumFactor); %determines if a drone is currently locked on to a fire
-if locked(r)==1 && startLocked(r)==0 %if it is locked on, and this update hasnt already occured,
-    startLocked(r)=1; %make sure this update isnt repeated
-    initialt(r)=time; %initialize the time that it should start tracking the fire as now
-    startDrones(r,:)=dronepositions(r,:); %initialize this position as the starting position of the drone so velocity can be calcualted
-    fireInitial(r,:)=dronepositions(r,:); %initialzie this as the position where the fire position is considered to have started at
 end
-end
+
+droneCheckFrequency=mod(time,frequencyVar); %frequency that drone lockedon statuses are evaulated
+
 
 subplot(2,2,3) %plot the position of each drone and save the frame
 mesh(dronematrix);
@@ -258,27 +259,41 @@ ylabel('x');
 hold off
 B(time)=getframe;
 
-droneCheckFrequency=mod(time,frequencyVar); %frequency that drone lockedon statuses are evaulated
 
-fireMax=2000; %max value for the intensity before a fire is deemed large enough that the drone covering the fire needs assistance from another drone
-if droneCheckFrequency==1
+fireMax=1500; %max value for the intensity before a fire is deemed large enough that the drone covering the fire needs assistance from another drone
+if droneCheckFrequency==0
 for i=1:N
-    if (locked(i)==0 && abs(dronepositions(i,1)-oldpositions(i,1))<minMove && abs(dronepositions(i,2)-oldpositions(i,2))<minMove) || sumt(i)>fireMax %if the drone is caught in between two fires and is not moving (its at the center of intensity of one large fire which is really two, so it wont move), or the fire is too big for one drone
+    if (locked(i)==0 && abs(dronepositions(i,1)-oldpositions(i,1))<minMove && abs(dronepositions(i,2)-oldpositions(i,2))<minMove) || sumt(i)>fireMax %if the drone is caught in between two fires and is not moving (its at the center of intensity of one large fire which is really two, so it wont move), or the fire is too big for one drone 
         addDrone=1; %add a drone
         dronenum(N+1)=N+1; %associates each drone with a number/colour
-        dronepositions(N+1,:)=goToLargest(dronepositions,maxIndex)%call startdrone function to initialize initial coordinates for all drones
+        dronepositions(N+1,:)=goToLargest(dronepositions,maxIndex);%call startdrone function to initialize initial coordinates for all drones
         dronematrix(dronepositions(N+1,1),dronepositions(N+1,2))=dronenum(N+1);%sets initial positions onto the position matrix along with unique drone identifier number 
     end
 end
 end
+
 if addDrone==1 %if a drone has just been added,
     N=N+1; %increase the number of drones
     velocity=[velocity;zeros(1,2)]; %append all the below matrices to make room for this new drone on the next iteration
     locked=[locked 0];
     startLocked=[startLocked 0];
-    initialt=[initialt 0];
-    startDrones=[startDrones;zeros(1,2)];
 end
+if droneCheckFrequency==3
+    for i=1:N
+    initPos(i,:)=dronepositions(i,:);
+    end
+    initPos
+end
+
+
+if droneCheckFrequency==frequencyVar-1
+    for i=1:N
+        droneVel(i,:)=(dronepositions(i,:)-initPos(i,:))/frequencyVar-3;
+    end
+    droneVel
+end
+
+
 addDrone=0; %set the addDrone variable to zero so the computer can know for next time if another drone has to be added
 time=time+1; %increase the time 
 save B %save the below figures as movie frames, B=intensity,M=closest,C=dronematrix
@@ -286,13 +301,10 @@ save M
 save C
 end
 
-droneVel=zeros(N,2); %initialize the drone velocities
+% droneVelCheck=mod(time,velUpdateFrequency) %frequency that drone lockedon statuses are evaulated
 
-for l=1:N
-    droneVel(l,:)=(dronepositions(l,:)-startDrones(l,:))/(time-1-initialt(l));
-end
-droneVel
-fireVel=firespeed(fireInitial,time,N,CM)
+
+% fireVel=firespeed(fireInitial,time,N,CM)
 
 % for i=1:N
 %     fireMag(i)=((fireVel(i,1))^2+(fireVel(i,2))^2)^0.5;

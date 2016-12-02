@@ -23,7 +23,7 @@ for i=1:N
     % Finds centre of mass of firey area associated with drones 1 and 2 
     % repesctively
     if sumt(i)==1
-        CM(i,:)=goToLargest(dronepositions,maxIndex)
+        CM(i,:)=goToLargest(dronepositions,maxIndex);
     end
     
     % Determines which directions the drones must travel to get to the 
